@@ -31,17 +31,17 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
+					<tr id="csi300tr">
 						<td>沪深 300</td>
 						<td><span id="csi300">3434.39</span></td>
 						<td><span id="csi300new"></td>
-						<td id="csi300td"><span id="csi300pct"></td>
+						<td><span id="csi300pct"></td>
 					</tr>
-					<tr>
+					<tr id="zz500tr">
 						<td>中证 500</td>
 						<td><span id="zz500">5632.73</span></td>
 						<td><span id="zz500new"></td>
-						<td id="zz500td"><span id="zz500pct"></td>
+						<td><span id="zz500pct"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -91,12 +91,12 @@
 		$('#zz500pct').text(percentToString(zz500pct))
 
 		if (zz500pct > csi300pct) {
-			$('#zz500td').addClass('am-danger')
-			$('#csi300td').removeClass('am-danger')
+			$('#zz500tr').addClass('am-danger')
+			$('#csi300tr').removeClass('am-danger')
 			$('#next28').text('中证500指数')
 		} else {
-			$('#csi300td').addClass('am-danger')
-			$('#zz500td').removeClass('am-danger')
+			$('#csi300tr').addClass('am-danger')
+			$('#zz500tr').removeClass('am-danger')
 			$('#next28').text('沪深300指数')
 		}
 
