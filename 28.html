@@ -7,92 +7,102 @@
 		<meta name="keywords" content="">
 		<meta name="viewport"
 		content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-		<title>二八轮动测算</title>
-		<script src="http://hq.sinajs.cn/list=sh000905"></script>
-		<script src="http://hq.sinajs.cn/list=sh000300"></script>
+
+		<!-- No Baidu Siteapp-->
+		<meta http-equiv="Cache-Control" content="no-siteapp"/>
+
 		<!-- <script src="http://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script> -->
 		<script src="http://cdn.bootcss.com/zepto/1.1.4/zepto.js"></script>
 		<link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.2.1/css/amazeui.min.css">
+
+		<title>二八轮动模型测算</title>
 	</head>
 	<body>
-		<div class="am-g">
-			<div class="am-u-sm-12">
-				<h2>二八轮动模型测算</h2>
-				<hr>
-				<p>请输入四周前沪深300指数收盘价：<input type="number"  id="csi300" value="3434.39"  class="week4"></p>
-				<p>请输入四周前中证500指数收盘价：<input type="number"  id="zz500" value="5632.73" class="week4"></p>
-				<p><small>上述收盘价一经设置就会在浏览器自动保存</small></p>
-				<p><button id="clearindex">清空已保存数据</button></p>
-				<p>沪深300指数最新收盘价:<span id="csi300new"></span></p>
-				<p>中证500指数最新收盘价:<span id="zz500new"></span></p>
-				<p>沪深300指数4周涨幅:<span id="csi300pct"></span></p>
-				<p>中证500指数4周涨幅:<span id="zz500pct"></span></p>
-				<p>下周选择：<span id="next28" style="color:red"></span></p>
-				<button id="shuaxin">刷新页面</button>
-				<hr>
-			<footer>关于二八轮动模型如何使用，请添加微信公众号Seekingbeta_earl(也可扫描下面二维码)后回复“二八”查看</footer>
+		<div class="am-container">
+			<h1 class="am-margin-vertical">二八轮动模型测算</h1>
+
+			<table class="am-table am-table-bordered am">
+				<thead>
+					<tr>
+						<th>指数</th>
+						<th>四周前</th>
+						<th>最新价格</th>
+						<th>涨幅</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>沪深 300</td>
+						<td><span id="csi300">3434.39</span></td>
+						<td><span id="csi300new"></td>
+						<td id="csi300td"><span id="csi300pct"></td>
+					</tr>
+					<tr>
+						<td>中证 500</td>
+						<td><span id="zz500">5632.73</span></td>
+						<td><span id="zz500new"></td>
+						<td id="zz500td"><span id="zz500pct"></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<p>下周选择：<span id="next28" class="am-text-danger"></span></p>
+			<button id="shuaxin" class="am-btn am-btn-default">刷新页面</button>
+			<p>
+				<footer>关于二八轮动模型如何使用，请添加微信公众号Seekingbeta_earl(也可扫描下面二维码)后回复“二八”查看</footer>
+			</p>
 			<img src="qrcode.png" alt="">
+
 		</div>
-	</div>
-	<script>
-		var csi300=hq_str_sh000300.split(',')
-		var zz500=hq_str_sh000905.split(',')
-		$('#csi300new').text(csi300[3])
-		$('#zz500new').text(zz500[3])
-		csi300four=localStorage.csi300
-		if(csi300four===undefined){
-			csi300four=parseFloat($('#csi300').val())
-		}else{
-			csi300four=parseFloat(csi300four)
-			$('#csi300').val(csi300four)
+
+		<script src="http://hq.sinajs.cn/list=sh000905"></script>
+		<script src="http://hq.sinajs.cn/list=sh000300"></script>
+		<script>
+		function calcPercent(previous, current) {
+			return (parseFloat(current) / parseFloat(previous) - 1) * 100
 		}
-		csi300pct=(csi300[3]/csi300four*100)-100
-		csi300pct=csi300pct.toFixed(2)
-		$('#csi300pct').text(csi300pct)
-		zz500four=localStorage.zz500
-		if(zz500four===undefined){
-			zz500four=parseFloat($('#zz500').val())
-		}else{
-			zz500four=parseFloat(zz500four)
-			$('#zz500').val(zz500four)
+
+		function percentToString(pct) {
+			return pct.toFixed(2).toString().concat('%')
 		}
-		zz500pct=(zz500[3]/zz500four*100)-100
-		zz500pct=zz500pct.toFixed(2)
-		$('#zz500pct').text(zz500pct)
-		xuanze()
-		function  xuanze(){
-			csi300pct=parseFloat(csi300pct)
-			zz500pct=parseFloat(zz500pct)
-			if(zz500pct>csi300pct){
-				$('#next28').text('中证500指数')
-			}else{
-				$('#next28').text('沪深300指数')
-			}
-		};
-		$('#csi300').change(function() {
-			csi300four=parseFloat($('#csi300').val())
-			csi300pct=(csi300[3]/csi300four*100)-100
-			csi300pct=csi300pct.toFixed(2)
-			$('#csi300pct').text(csi300pct)
-			localStorage.csi300=csi300four
-			xuanze()
-		});
-		$('#zz500').change(function() {
-			zz500four=parseFloat($('#zz500').val())
-			zz500pct=(zz500[3]/zz500four*100)-100
-			zz500pct=zz500pct.toFixed(2)
-			$('#zz500pct').text(zz500pct)
-			localStorage.zz500=zz500four
-			xuanze()
-		});
-		$('#clearindex').click(function() {
-			localStorage.clear()
-			// alert('清空后请手动刷新浏览器')
-			location.reload()
-		});
+
+		var csi300 = hq_str_sh000300.split(',')[3]
+		var zz500 = hq_str_sh000905.split(',')[3]
+
+		$('#csi300new').text(csi300)
+		$('#zz500new').text(zz500)
+
+		var csi300four = localStorage.csi300
+		if (csi300four === undefined) {
+			csi300four = $('#csi300').text()
+		} else {
+			$('#csi300').text(csi300four)
+		}
+		var csi300pct = calcPercent(csi300four, csi300)
+		$('#csi300pct').text(percentToString(csi300pct))
+
+		var zz500four = localStorage.zz500
+		if (zz500four === undefined) {
+			zz500four = $('#zz500').text()
+		} else {
+			$('#zz500').text(zz500four)
+		}
+		var zz500pct = calcPercent(zz500four, zz500)
+		$('#zz500pct').text(percentToString(zz500pct))
+
+		if (zz500pct > csi300pct) {
+			$('#zz500td').addClass('am-danger')
+			$('#csi300td').removeClass('am-danger')
+			$('#next28').text('中证500指数')
+		} else {
+			$('#csi300td').addClass('am-danger')
+			$('#zz500td').removeClass('am-danger')
+			$('#next28').text('沪深300指数')
+		}
+
 		$('#shuaxin').click(function() {
 			location.reload()
 		});
-	</script>
-</body>
+		</script>
+	</body>
 </html>
