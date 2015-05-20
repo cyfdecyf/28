@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="viewport"
+		content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<title>二八轮动测算</title>
+		<script src="http://hq.sinajs.cn/list=sh000905"></script>
+		<script src="http://hq.sinajs.cn/list=sh000300"></script>
+		<!-- <script src="http://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script> -->
+		<script src="http://cdn.bootcss.com/zepto/1.1.4/zepto.js"></script>
+		<link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.2.1/css/amazeui.min.css">
+	</head>
+	<body>
+		<div class="am-g">
+			<div class="am-u-sm-12">
+				<h2>二八轮动模型测算</h2>
+				<hr>
+				<p>请输入四周前沪深300指数收盘价：<input type="number"  id="csi300" value="3434.39"  class="week4"></p>
+				<p>请输入四周前中证500指数收盘价：<input type="number"  id="zz500" value="5632.73" class="week4"></p>
+				<p><small>上述收盘价一经设置就会在浏览器自动保存</small></p>
+				<p><button id="clearindex">清空已保存数据</button></p>
+				<p>沪深300指数最新收盘价:<span id="csi300new"></span></p>
+				<p>中证500指数最新收盘价:<span id="zz500new"></span></p>
+				<p>沪深300指数4周涨幅:<span id="csi300pct"></span></p>
+				<p>中证500指数4周涨幅:<span id="zz500pct"></span></p>
+				<p>下周选择：<span id="next28" style="color:red"></span></p>
+				<button id="shuaxin">刷新页面</button>
+				<hr>
+			<footer>关于二八轮动模型如何使用，请添加微信公众号Seekingbeta_earl(也可扫描下面二维码)后回复“二八”查看</footer>
+			<img src="qrcode.png" alt="">
+		</div>
+	</div>
+	<script>
+		var csi300=hq_str_sh000300.split(',')
+		var zz500=hq_str_sh000905.split(',')
+		$('#csi300new').text(csi300[3])
+		$('#zz500new').text(zz500[3])
+		csi300four=localStorage.csi300
+		if(csi300four===undefined){
+			csi300four=parseFloat($('#csi300').val())
+		}else{
+			csi300four=parseFloat(csi300four)
+			$('#csi300').val(csi300four)
+		}
+		csi300pct=(csi300[3]/csi300four*100)-100
+		csi300pct=csi300pct.toFixed(2)
+		$('#csi300pct').text(csi300pct)
+		zz500four=localStorage.zz500
+		if(zz500four===undefined){
+			zz500four=parseFloat($('#zz500').val())
+		}else{
+			zz500four=parseFloat(zz500four)
+			$('#zz500').val(zz500four)
+		}
+		zz500pct=(zz500[3]/zz500four*100)-100
+		zz500pct=zz500pct.toFixed(2)
+		$('#zz500pct').text(zz500pct)
+		xuanze()
+		function  xuanze(){
+			csi300pct=parseFloat(csi300pct)
+			zz500pct=parseFloat(zz500pct)
+			if(zz500pct>csi300pct){
+				$('#next28').text('中证500指数')
+			}else{
+				$('#next28').text('沪深300指数')
+			}
+		};
+		$('#csi300').change(function() {
+			csi300four=parseFloat($('#csi300').val())
+			csi300pct=(csi300[3]/csi300four*100)-100
+			csi300pct=csi300pct.toFixed(2)
+			$('#csi300pct').text(csi300pct)
+			localStorage.csi300=csi300four
+			xuanze()
+		});
+		$('#zz500').change(function() {
+			zz500four=parseFloat($('#zz500').val())
+			zz500pct=(zz500[3]/zz500four*100)-100
+			zz500pct=zz500pct.toFixed(2)
+			$('#zz500pct').text(zz500pct)
+			localStorage.zz500=zz500four
+			xuanze()
+		});
+		$('#clearindex').click(function() {
+			localStorage.clear()
+			// alert('清空后请手动刷新浏览器')
+			location.reload()
+		});
+		$('#shuaxin').click(function() {
+			location.reload()
+		});
+	</script>
+</body>
+</html>
