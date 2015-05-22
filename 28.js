@@ -1,12 +1,15 @@
 // 沪深300 和中证500 指数
-var csi300Current = 0;
-var zz500Current = 0;
+var csi300 = {
+	current: 0,
+	previous: 1,
+	increase: 0
+};
 
-var csi300Previous = 1;
-var zz500Previous = 1;
-
-var csi300Increase = 0;
-var zz500Increase = 0;
+var zz500 = {
+	current: 0,
+	previous: 1,
+	increase: 0
+};
 
 // 计算 current 相比 previous 增长百分比
 function increasePercent(previous, current) {
@@ -20,8 +23,8 @@ function getCurrentQuote() {
 		async: false,
 		success: function (data) {
 			var arr = data.split('\n');
-			csi300Current = parseFloat(arr[0].split(',')[3]);
-			zz500Current = parseFloat(arr[1].split(',')[3]);
+			csi300.current = parseFloat(arr[0].split(',')[3]);
+			zz500.current = parseFloat(arr[1].split(',')[3]);
 		},
 		error: function(xhr, errType, error) {
 			alert("Failed to get current index quote.");
@@ -63,34 +66,34 @@ function getQuoteFromYahoo(stock, callback) {
 // 获取指数往前 4 周时的收盘价（本周也算在内）
 function getPreviousQuote() {
 	getQuoteFromYahoo('000300.SS', function(price) {
-		csi300Previous = price;
+		csi300.previous = price;
 	});
-	// Yahoo 没有中证 500 指数的历史数据
+	// Yahoo 没有中证 500 指数的历史数据，所以不能使用了
 	getQuoteFromYahoo('000905.SS', function(price) {
-		zz500Previous = price;
+		zz500.previous = price;
 	});
 }
 
 function calculateIncrease() {
-	csi300Increase = increasePercent(csi300Previous, csi300Current);
-	zz500Increase = increasePercent(zz500Previous, zz500Current);
+	csi300.increase = increasePercent(csi300.previous, csi300.current);
+	zz500.increase = increasePercent(zz500.previous, zz500.current);
 }
 
 function updateUI() {
 	// 更新页面指数当前价格
-	$('#csi300Current').text(csi300Current.toFixed(2));
-	$('#zz500Current').text(zz500Current.toFixed(2));
+	$('#csi300Current').text(csi300.current.toFixed(2));
+	$('#zz500Current').text(zz500.current.toFixed(2));
 
 	// 更新页面指数过去价格
-	$('#csi300Previous').text(csi300Previous.toFixed(2));
-	$('#zz500Previous').text(zz500Previous.toFixed(2));
+	$('#csi300Previous').text(csi300.previous.toFixed(2));
+	$('#zz500Previous').text(zz500.previous.toFixed(2));
 
 	// 更新指数增幅
-	$('#csi300Increase').text(csi300Increase.toFixed(2) + '%');
-	$('#zz500Increase').text(zz500Increase.toFixed(2) + '%');
+	$('#csi300Increase').text(csi300.increase.toFixed(2) + '%');
+	$('#zz500Increase').text(zz500.increase.toFixed(2) + '%');
 
 	// 更新选择指数，高亮指数所在行
-	if (zz500Increase > csi300Increase) {
+	if (zz500.increase > csi300.increase) {
 		console.log("select zz500");
 		$('#zz500Tr').addClass('am-danger');
 		$('#csi300Tr').removeClass('am-danger');
