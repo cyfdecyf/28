@@ -53,45 +53,17 @@ function formatDate(d) {
 	return [ d.getFullYear(), month, date ].join('');
 }
 
-function getQuoteFromNetEase(stock, callback) {
-	var today = new Date();
-	// 放假可能有一周时间不开盘，为确保能找到过去 N 周的收盘数据，多取几周的数据
-	var startDate = new Date(today - (LOOK_BACK_N_WEEK + 2) * WEEK_MILLISECOND);
-
+// stock: sh000300, sh000905
+function getNWeekBeforeClose(stock, nweek, callback) {
 	var dailyQuoteUrl = [
-		'http://quotes.money.163.com/service/chddata.html',
-		"?code=", stock,
-		'&start=', formatDate(startDate),
-		'&end=', formatDate(today),
-		'&fields=TCLOSE'
+		'http://data.gtimg.cn/flashdata/hushen/weekly/', stock, '.js'
 	].join('');
 
-	// console.log(dailyQuoteUrl);
-
-	// 价格按日期逆序排列，一行一行数据往回走，倒退 1 周，返回上周最后一个交易日的索引
-	function goBack1Week(quote, start) {
-		var day2 = parseDate(quote[start].split(',')[0]);
-		for (var i = 1; i <= 5; i++) { // 一周最多 5 个交易日
-			var day1 = parseDate(quote[start + i].split(',')[0]);
-			// 往回走一天，若星期几变大，说明一定倒退了一周
-			// 若天数差异 >= 7，也一定回退了一周（休市一周时星期几不会回退）
-			if ((day1.getDay() >= day2.getDay()) ||
-				(day2 - day1 >= WEEK_MILLISECOND)) {
-				return start + i;
-			}
-			day2 = day1;
-		}
-	}
-
 	function getClosePrice(data) {
-		var quote = data.split('\n');
-		var idx = 1; // 跳过第一行列说明
-		// 如需比较最近 4 周的涨幅，回退 4 周的收盘价和本周的收盘价进行比较
-		for (var i = 0; i < LOOK_BACK_N_WEEK; i++) {
-			idx = goBack1Week(quote, idx);
-			console.log("back", i, quote[idx].split(',')[0]);
-		}
-		return parseFloat(quote[idx].split(',')[3]);
+		// 周线数据按时间排序，最后一行无数据
+		var weekly = data.split('\n');
+		var quote = weekly[weekly.length - 2 - nweek];
+		return parseFloat(quote.split(' ')[2]);
 	}
 
 	$.ajax({
@@ -101,17 +73,17 @@ function getQuoteFromNetEase(stock, callback) {
 			callback(getClosePrice(data));
 		},
 		error: function(xhr, errType, error) {
-			alert("Failed to get previous index quote for " + stock);
+			alert("Fail to get previous index quote for " + stock);
 		}
 	});
 }
 
 // 获取指数往前 4 周时的收盘价（本周也算在内）
 function getPreviousQuote() {
-	getQuoteFromNetEase('0000300', function(quote) {
+	getNWeekBeforeClose('sh000300', LOOK_BACK_N_WEEK, function(quote) {
 		csi300.previous = quote;
 	});
-	getQuoteFromNetEase('0000905', function(quote) {
+	getNWeekBeforeClose('sh000905', LOOK_BACK_N_WEEK, function(quote) {
 		zz500.previous = quote;
 	});
 }
