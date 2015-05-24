@@ -85,12 +85,12 @@ function updateUI() {
 		console.log("select zz500");
 		$('#zz500Tr').addClass('am-danger');
 		$('#csi300Tr').removeClass('am-danger');
-		$('#next28').text('中证 500 指数');
+		$('#next28').text('中证500 指数');
 	} else {
 		console.log("select csi300");
 		$('#csi300Tr').addClass('am-danger');
 		$('#zz500Tr').removeClass('am-danger');
-		$('#next28').text('沪深 300 指数');
+		$('#next28').text('沪深300 指数');
 	}
 }
 
