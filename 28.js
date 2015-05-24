@@ -34,23 +34,6 @@ function getCurrentQuote() {
 var LOOK_BACK_N_WEEK = 4;
 var WEEK_MILLISECOND = 7*24*60*60*1000;
 
-function parseDate(str) {
-	var parts = str.split('-');
-	return new Date(parts[0], parts[1] - 1, parts[2]); // Note: months are 0-based
-}
-
-function formatDate(d) {
-	var month = d.getMonth() + 1;
-	if (month < 10) {
-		month = [0, month].join('');
-	}
-	var date = d.getDate();
-	if (date < 10) {
-		date = [0, date].join('');
-	}
-	return [ d.getFullYear(), month, date ].join('');
-}
-
 // stock: sh000300, sh000905
 function getNWeekBeforeClose(stock, nweek, callback) {
 	var s = document.createElement('script');

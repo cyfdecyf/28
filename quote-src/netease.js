@@ -1,6 +1,23 @@
 // 网易的数据访问会遇到 Access-Control-Allow-Origin 的问题
 // stock: 0000300, 0000905
 function getNWeekBeforeClose(stock, nweek, callback) {
+	function parseDate(str) {
+		var parts = str.split('-');
+		return new Date(parts[0], parts[1] - 1, parts[2]); // Note: months are 0-based
+	}
+
+	function formatDate(d) {
+		var month = d.getMonth() + 1;
+		if (month < 10) {
+			month = [0, month].join('');
+		}
+		var date = d.getDate();
+		if (date < 10) {
+			date = [0, date].join('');
+		}
+		return [ d.getFullYear(), month, date ].join('');
+	}
+
 	var today = new Date();
 	// 放假可能有一周时间不开盘，为确保能找到过去 n 周的收盘数据，多取几周的数据
 	var startDate = new Date(today - (nweek + 2) * WEEK_MILLISECOND);
