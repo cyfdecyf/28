@@ -19,7 +19,7 @@ function increasePercent(previous, current) {
 // 获取指数当前价格
 function getCurrentQuote() {
 	var s = document.createElement('script');
-	s.src = "http://hq.sinajs.cn/list=sh000300,sh000905";
+	s.src = 'http://hq.sinajs.cn/list=sh000300,sh000905';
 	s.onload = function () {
 		// console.log(s.src, 'loaded');
 		csi300.current = parseFloat(hq_str_sh000300.split(',')[3]);
@@ -27,7 +27,7 @@ function getCurrentQuote() {
 
 		selectNext28();
 	};
-	$("head").append(s);
+	$('head').append(s);
 }
 
 // 比较最近 N 周的涨幅，则获取回退 N 周时的收盘价
@@ -112,10 +112,8 @@ function selectNext28() {
 $(document).ready(function() {
 	getPreviousQuote(); // 只需执行一次
 	getCurrentQuote();
-	selectNext28();
 
-	$('#refresh').click(function() {
+	$('#refresh').on('click', function() {
 		getCurrentQuote();
-		selectNext28();
 	});
 });
