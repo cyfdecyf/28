@@ -1,14 +1,14 @@
 // 沪深300 和中证500 指数
 var csi300 = {
-	current: 0,
-	previous: 1,
-	increase: 0
+	current: -1,
+	previous: -1,
+	increase: -1,
 };
 
 var zz500 = {
-	current: 0,
-	previous: 1,
-	increase: 0
+	current: -1,
+	previous: -1,
+	increase: -1,
 };
 
 // 计算 current 相比 previous 增长百分比
@@ -18,18 +18,16 @@ function increasePercent(previous, current) {
 
 // 获取指数当前价格
 function getCurrentQuote() {
-	$.ajax({
-		url: 'http://hq.sinajs.cn/list=sh000300,sh000905',
-		async: false,
-		success: function (data) {
-			var arr = data.split('\n');
-			csi300.current = parseFloat(arr[0].split(',')[3]);
-			zz500.current = parseFloat(arr[1].split(',')[3]);
-		},
-		error: function(xhr, errType, error) {
-			alert("Failed to get current index quote.");
-		}
-	});
+	var s = document.createElement('script');
+	s.src = "http://hq.sinajs.cn/list=sh000300,sh000905";
+	s.onload = function () {
+		// console.log(s.src, 'loaded');
+		csi300.current = parseFloat(hq_str_sh000300.split(',')[3]);
+		zz500.current = parseFloat(hq_str_sh000905.split(',')[3]);
+
+		selectNext28();
+	};
+	$("head").append(s);
 }
 
 // 比较最近 N 周的涨幅，则获取回退 N 周时的收盘价
@@ -55,27 +53,20 @@ function formatDate(d) {
 
 // stock: sh000300, sh000905
 function getNWeekBeforeClose(stock, nweek, callback) {
-	var dailyQuoteUrl = [
-		'http://data.gtimg.cn/flashdata/hushen/weekly/', stock, '.js'
-	].join('');
-
-	function getClosePrice(data) {
+	var s = document.createElement('script');
+	s.src = [ 'http://data.gtimg.cn/flashdata/hushen/weekly/', stock, '.js'].join('');
+	s.onload = function () {
+		// console.log(s.src, 'loaded');
 		// 周线数据按时间排序，最后一行无数据
-		var weekly = data.split('\n');
+		var weekly = weekly_data.split('\n');
+		weekly_data = null;
 		var quote = weekly[weekly.length - 2 - nweek];
-		return parseFloat(quote.split(' ')[2]);
-	}
+		var close = parseFloat(quote.split(' ')[2]);
+		callback(close);
 
-	$.ajax({
-		url: dailyQuoteUrl,
-		async: false,
-		success: function (data) {
-			callback(getClosePrice(data));
-		},
-		error: function(xhr, errType, error) {
-			alert("Fail to get previous index quote for " + stock);
-		}
-	});
+		selectNext28();
+	};
+	$("head").append(s);
 }
 
 // 获取指数往前 4 周时的收盘价（本周也算在内）
@@ -122,19 +113,26 @@ function updateUI() {
 
 // 获取数据，计算涨幅，选择下一周的指数
 function selectNext28() {
-	getCurrentQuote();
+	// 若价格还未加载完成，直接返回
+	if ((csi300.current === -1) ||
+		(zz500.current === -1) ||
+		(csi300.previous === -1) ||
+		(zz500.previous === -1))  {
+		return;
+	}
+
 	calculateIncrease();
 	updateUI();
 }
 
 // 当页面元素加载完毕
 $(document).ready(function() {
-	// 只需执行一次
-	getPreviousQuote();
-
+	getPreviousQuote(); // 只需执行一次
+	getCurrentQuote();
 	selectNext28();
 
 	$('#refresh').click(function() {
+		getCurrentQuote();
 		selectNext28();
 	});
 });
