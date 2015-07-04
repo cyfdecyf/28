@@ -32,7 +32,6 @@ function getCurrentQuote() {
 
 // 比较最近 N 周的涨幅，则获取回退 N 周时的收盘价
 var LOOK_BACK_N_WEEK = 4;
-var WEEK_MILLISECOND = 7*24*60*60*1000;
 
 // stock: sh000300, sh000905
 function getNWeekBeforeClose(stock, nweek, callback) {

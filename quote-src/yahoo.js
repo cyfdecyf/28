@@ -1,6 +1,7 @@
 // Yahoo 的数据现在没有中证 500 指数的历史数据
 // stock: 000300.SS, 000905.SS
 function getNWeekBeforeClose(stock, nweek, callback) {
+	var WEEK_MILLISECOND = 7*24*60*60*1000;
 	var today = new Date();
 	// 放假可能有一周时间不开盘，为确保能找到过去 n 周的收盘数据，多取几周的数据
 	var startDate = new Date(today - (nweek + 2) * WEEK_MILLISECOND);

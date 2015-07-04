@@ -1,6 +1,7 @@
 // 网易的数据访问会遇到 Access-Control-Allow-Origin 的问题
 // stock: 0000300, 0000905
 function getNWeekBeforeClose(stock, nweek, callback) {
+	var WEEK_MILLISECOND = 7*24*60*60*1000;
 	function parseDate(str) {
 		var parts = str.split('-');
 		return new Date(parts[0], parts[1] - 1, parts[2]); // Note: months are 0-based
