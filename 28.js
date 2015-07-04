@@ -19,11 +19,11 @@ function increasePercent(previous, current) {
 // 获取指数当前价格
 function getCurrentQuote() {
 	var s = document.createElement('script');
-	s.src = 'http://hq.sinajs.cn/list=sh000300,sh000905';
+	s.src = 'http://qt.gtimg.cn/q=sh000300,sh000905';
 	s.onload = function () {
 		// console.log(s.src, 'loaded');
-		csi300.current = parseFloat(hq_str_sh000300.split(',')[3]);
-		zz500.current = parseFloat(hq_str_sh000905.split(',')[3]);
+		csi300.current = parseFloat(v_sh000300.split('~')[3]);
+		zz500.current = parseFloat(v_sh000905.split('~')[3]);
 
 		selectNext28();
 	};
