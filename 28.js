@@ -19,11 +19,14 @@ function increasePercent(previous, current) {
 // 获取指数当前价格
 function getCurrentQuote() {
 	var s = document.createElement('script');
-	s.src = 'http://qt.gtimg.cn/q=sh000300,sh000905';
+	//s.src = 'http://qt.gtimg.cn/q=sh000300,sh000905';
+	// TODO generate prices for every
+	s.src = 'http://qt.gtimg.cn/q=sh000300,sz399008';
 	s.onload = function () {
 		// console.log(s.src, 'loaded');
 		csi300.current = parseFloat(v_sh000300.split('~')[3]);
-		zz500.current = parseFloat(v_sh000905.split('~')[3]);
+		//zz500.current = parseFloat(v_sh000905.split('~')[3]);
+		zz500.current = parseFloat(v_sz399008.split('~')[3]);
 
 		selectNext28();
 	};
@@ -56,7 +59,8 @@ function getPreviousQuote() {
 	getNWeekBeforeClose('sh000300', LOOK_BACK_N_WEEK, function(quote) {
 		csi300.previous = quote;
 	});
-	getNWeekBeforeClose('sh000905', LOOK_BACK_N_WEEK, function(quote) {
+	//getNWeekBeforeClose('sh000905', LOOK_BACK_N_WEEK, function(quote) {
+	getNWeekBeforeClose('sz399008', LOOK_BACK_N_WEEK, function(quote) {
 		zz500.previous = quote;
 	});
 }
@@ -84,7 +88,8 @@ function updateUI() {
 		console.log("select zz500");
 		$('#zz500Tr').addClass('am-danger');
 		$('#csi300Tr').removeClass('am-danger');
-		$('#next28').text('中证500 指数');
+		// $('#next28').text('中证500 指数');
+		$('#next28').text('中小300 指数');
 	} else {
 		console.log("select csi300");
 		$('#csi300Tr').addClass('am-danger');
